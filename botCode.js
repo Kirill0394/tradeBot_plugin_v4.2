@@ -1,8 +1,8 @@
-// botCode.js hehe
+// botCode.js
 
 // Пример кода, который вы хотите выполнить в консоли
 const botCode = {
-    startBot: `function getEl(str) {
+  startBot: `function getEl(str) {
     return document.querySelector(str);
 }
 
@@ -268,7 +268,6 @@ else {
     alert('The bot is not running. Profit below 92% (=' + profitPercent + '%)')
 }
 `,
-    stopBot: 'stopBot()',
-    restartBot: 'startBot()',
-}
-
+  stopBot: "stopBot()",
+  restartBot: "startBot()",
+};
