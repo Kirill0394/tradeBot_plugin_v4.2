@@ -1,0 +1,20 @@
+{
+  "manifest_version": 2,
+  "name": "tradeBot_w_deflt_input",
+  "version": "1.9",
+  "description": "tradeBot for PocketOption",
+  "permissions": [
+    "activeTab"
+  ],
+  "browser_action": {
+    "default_icon": "icon.png",
+    "default_popup": "popup.html"
+  },
+  "icons": {
+    "48": "icon.png"
+  },
+  "background": {
+    "scripts": ["popup.js"],
+    "persistent": false
+  }
+}
