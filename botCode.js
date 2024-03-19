@@ -1,4 +1,4 @@
-// botCode.js
+// botCode.js hehe
 
 // Пример кода, который вы хотите выполнить в консоли
 const botCode = {
