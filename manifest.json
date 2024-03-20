@@ -4,7 +4,8 @@
   "version": "1.9",
   "description": "tradeBot for PocketOption",
   "permissions": [
-    "activeTab"
+    "activeTab",
+    "storage"
   ],
   "browser_action": {
     "default_icon": "icon.png",
@@ -14,7 +15,9 @@
     "48": "icon.png"
   },
   "background": {
-    "scripts": ["popup.js"],
+    "scripts": [
+      "popup.js"
+    ],
     "persistent": false
   }
 }

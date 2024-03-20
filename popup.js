@@ -4,9 +4,41 @@ document.head.appendChild(script);
 
 let isInit = false;
 
+// Функция для сохранения состояния бота в локальном хранилище
+function saveBotState(isBotRunning) {
+  chrome.storage.local.set({ isBotRunning });
+}
+
 document.addEventListener("DOMContentLoaded", function () {
+  // Функция для загрузки состояния бота из локального хранилища
+  function loadBotState(callback) {
+    chrome.storage.local.get("isBotRunning", function (data) {
+      callback(data.isBotRunning);
+    });
+  }
+
+  // Обновляем кнопки в соответствии с состоянием бота
+  function updateButtons(isBotRunning) {
+    const startBotButton = document.getElementById("startBot");
+    const stopBotButton = document.getElementById("stopBot");
+
+    if (isBotRunning) {
+      startBotButton.style.display = "none";
+      stopBotButton.style.display = "block";
+    } else {
+      startBotButton.style.display = "block";
+      stopBotButton.style.display = "none";
+    }
+  }
+
+  // Загружаем состояние бота и обновляем кнопки
+  loadBotState(function (isBotRunning) {
+    updateButtons(isBotRunning);
+  });
+
   // Обработчик события для кнопки "Start Bot"
   const startBotButton = document.getElementById("startBot");
+  const stopBotButton = document.getElementById("stopBot");
   let defaultValue;
   if (startBotButton) {
     startBotButton.addEventListener("click", function () {
@@ -48,6 +80,8 @@ document.addEventListener("DOMContentLoaded", function () {
           } else {
             console.log("Код успешно выполнен:", result);
             isInit = true;
+            saveBotState(true); // Сохраняем состояние бота как запущенный
+            updateButtons(true); // Обновляем кнопки
           }
         });
       });
@@ -57,7 +91,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Обработчик события для кнопки "Stop Bot"
-  const stopBotButton = document.getElementById("stopBot");
   if (stopBotButton) {
     stopBotButton.addEventListener("click", function () {
       // Вставляем и выполняем код в консоли
@@ -78,6 +111,8 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
               console.log("Код успешно выполнен:", result);
               alert("The bot is stopped");
+              saveBotState(false); // Сохраняем состояние бота как остановленный
+              updateButtons(false); // Обновляем кнопки
             }
           },
         );
@@ -101,3 +136,4 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
+hehe;

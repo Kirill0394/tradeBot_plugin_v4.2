@@ -20,6 +20,13 @@
             padding: 8px;
             margin-top: 10px;
             cursor: pointer;
+            display: block;
+            width: 100%; /* Добавляем ширину 100% */
+        }
+
+        /* Добавляем стили для блока с кнопками */
+        .button-container {
+            margin-top: 10px; /* Отступ между кнопками */
         }
     </style>
 </head>
@@ -29,8 +36,10 @@
 <div id="betInputContainer" style="display: none;">
     <input type="text" id="defaultValue" placeholder="Start bet" value="1">
 </div>
-<button id="startBot">Start Bot</button>
-<button id="stopBot">Stop Bot</button>
+<div class="button-container"> <!-- Контейнер для кнопок -->
+    <button id="startBot">Start Bot</button>
+    <button id="stopBot" style="display: none;">Stop Bot</button>
+</div>
 
 </body>
 </html>

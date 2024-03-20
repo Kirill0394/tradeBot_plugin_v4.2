@@ -249,6 +249,15 @@ function startBot() {
     makeDecision();
 }
 
+function restartBot() {
+    const config = { childList: true, subtree: true };
+    const config2 = { subtree: true, characterData: true, childList: true };
+    
+    dealsListObserver.observe(dealsList, config);
+    profitBlockObserver.observe(profitBlock, config2);
+    makeDecision();
+}
+
 function stopBot() {
     dealsListObserver.disconnect();
     profitBlockObserver.disconnect();
@@ -269,5 +278,5 @@ else {
 }
 `,
   stopBot: "stopBot()",
-  restartBot: "startBot()",
+  restartBot: "restartBot()",
 };
