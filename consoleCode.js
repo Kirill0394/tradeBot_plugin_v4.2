@@ -1,8 +1,4 @@
-// botCode.js
-
-// Пример кода, который вы хотите выполнить в консоли
-const botCode = {
-  startBot: `function getEl(str) {
+function getEl(str) {
   return document.querySelector(str);
 }
 
@@ -146,11 +142,13 @@ const profitBlockObserver = new MutationObserver((mutations) => {
 });
 
 let block = false;
+let circleDone = true;
 
 const dealsListObserver = new MutationObserver((mutations) => {
   mutations.forEach((mutation) => {
     mutation.addedNodes.forEach((node) => {
       if (block) {
+        circleDone = true;
         smallBetLosses = 0;
         bigBetLosses = 0;
         currentCount = smallBets[smallBetLosses];
@@ -173,7 +171,7 @@ const dealsListObserver = new MutationObserver((mutations) => {
 
           divElements.forEach((div) => {
             const textContent = div.textContent.trim();
-            const numberValue = parseFloat(textContent.replace(/[^\\d.]/g, ""));
+            const numberValue = parseFloat(textContent.replace(/[^\d.]/g, ""));
 
             if (!isNaN(numberValue)) {
               textArray.push(numberValue);
@@ -182,6 +180,7 @@ const dealsListObserver = new MutationObserver((mutations) => {
 
           if (bigBetWin) {
             if (textArray[0] > textArray[1]) {
+              circleDone = false;
               if (smallBets.includes(currentCount)) {
                 smallBetLosses += 1;
 
@@ -210,6 +209,7 @@ const dealsListObserver = new MutationObserver((mutations) => {
               if (bigBets.includes(currentCount)) {
                 bigBetLosses = 0;
                 smallBetLosses = 0;
+                circleDone = true;
                 currentCount = smallBets[smallBetLosses];
               }
             }
@@ -276,7 +276,7 @@ function startBot() {
 function restartBot() {
   currentCount = smallBets[0];
   setValueInput(valueInput, currentCount);
-  
+
   const config = { childList: true, subtree: true };
   const config2 = { subtree: true, characterData: true, childList: true };
 
@@ -300,8 +300,3 @@ if (profitPercent >= 92) {
 } else {
   alert("The bot is not running. Profit below 92% (=" + profitPercent + "%)");
 }
- 
-`,
-  stopBot: "stopBot()",
-  restartBot: "restartBot()",
-};
