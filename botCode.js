@@ -18,7 +18,6 @@ function multiplyArray(arr) {
 }
 
 let smallBets = multiplyArray([1, 1]);
-let bigBets = multiplyArray([4, 11, 25, 55, 120, 250]);
 
 let currentCount = smallBets[0];
 
@@ -36,6 +35,28 @@ const profitBlock = getEl(".estimated-profit-block__text--up");
 let profitPercent = parseInt(profitBlock.textContent);
 const valueInput = getEl(".value__val input");
 const closedDealsButton = getAllEl(".right-widget-container .flex-centered")[2];
+
+let hotKeysOn;
+try {
+  const hotKeysMode = getEl(".hotkeys-icon.tooltip2 .on");
+  if (!hotKeysMode) {
+    hotKeysOn = false;
+  } else {
+    hotKeysOn = true;
+  }
+} catch (error) {
+  console.error("Произошла ошибка:", error.message);
+}
+
+function openHotKeysWindow() {
+  const hotKeysWindow = getEl(".hotkeys-icon.tooltip2");
+  hotKeysWindow.click();
+}
+
+function clickHotKeysButton() {
+  const hotKeysOnButton = getEl(".po-modal .btn-green-light");
+  hotKeysOnButton.click();
+}
 
 function openClosedDeals() {
   closedDealsButton.click();
@@ -225,7 +246,7 @@ const dealsListObserver = new MutationObserver((mutations) => {
             }
           }
 
-          if (currentCount > 249.0) {
+          if (currentCount >= maxBet) {
             block = true;
           }
 
@@ -276,7 +297,7 @@ function startBot() {
 function restartBot() {
   currentCount = smallBets[0];
   setValueInput(valueInput, currentCount);
-  
+
   const config = { childList: true, subtree: true };
   const config2 = { subtree: true, characterData: true, childList: true };
 
@@ -291,7 +312,12 @@ function stopBot() {
   console.log("Bot stopped");
 }
 
+
 if (profitPercent >= 92) {
+  if (!hotKeysOn) {
+    openHotKeysWindow();
+    setTimeout(clickHotKeysButton, 300);
+  }
   if (currentSymbol.includes("OTC")) {
     setTimeout(startBot, 2000);
   } else {
@@ -300,7 +326,8 @@ if (profitPercent >= 92) {
 } else {
   alert("The bot is not running. Profit below 92% (=" + profitPercent + "%)");
 }
- 
+
+
 `,
   stopBot: "stopBot()",
   restartBot: "restartBot()",

@@ -40,11 +40,20 @@ document.addEventListener("DOMContentLoaded", function () {
   const startBotButton = document.getElementById("startBot");
   const stopBotButton = document.getElementById("stopBot");
   let defaultValue;
+
+  let maxBetValue;
+
+  let bigBetsValue;
+
   if (startBotButton) {
     startBotButton.addEventListener("click", function () {
       // Получаем значение DEFAULT_START из поля ввода
       const defaultValueInput = document.getElementById("defaultValue");
       defaultValue = defaultValueInput.value;
+      const maxBetValueInput = document.getElementById("maxBetValue");
+      maxBetValue = maxBetValueInput.value;
+      const bigBetsValueInput = document.getElementById("bigBets");
+      bigBetsValue = bigBetsValueInput.value;
 
       // Вставляем и выполняем код в консоли
       chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
@@ -56,6 +65,13 @@ document.addEventListener("DOMContentLoaded", function () {
           params = {
             code: `
                             let DEFAULT_START = ${JSON.stringify(defaultValue)};
+                            let maxBet = ${JSON.stringify(maxBetValue)};
+                            let array = JSON.parse(\`${JSON.stringify(bigBetsValue)}\`);
+                            let array1 = floatArray = array.split(", ").map(function(item) {
+                                return parseFloat(item);
+                            });
+                            let bigBets = array1.map(x => x * DEFAULT_START);
+                            
                             ${isInit ? botCode.restartBot : botCode.startBot}
                         `,
           };
@@ -63,8 +79,14 @@ document.addEventListener("DOMContentLoaded", function () {
           params = {
             code: `
                             DEFAULT_START = ${JSON.stringify(defaultValue)};
+                            maxBet = ${JSON.stringify(maxBetValue)};
+                            array = JSON.parse(\`${JSON.stringify(bigBetsValue)}\`);
+                            array1 = floatArray = array.split(", ").map(function(item) {
+                                return parseFloat(item);
+                            });
+                            bigBets = array1.map(x => x * DEFAULT_START);
+                            
                             smallBets = multiplyArray([1, 1]);
-                            bigBets = multiplyArray([4, 11, 25, 55, 120, 250]);
                             ${isInit ? botCode.restartBot : botCode.startBot}
                         `,
           };

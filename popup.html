@@ -31,9 +31,16 @@
 </head>
 <body>
 <h1>Trade Successful!</h1>
-<button id="setBetButton">Set Bet</button>
+<button id="setBetButton">Bet settings</button>
 <div id="betInputContainer" style="display: none;">
-    <input type="text" id="defaultValue" placeholder="Start bet" value="1">
+    <label for="defaultValue">Start bet:</label>
+    <input type="text" id="defaultValue" value="1">
+
+    <label for="maxBetValue">Max bet:</label>
+    <input type="text" id="maxBetValue" value="250">
+
+    <label for="bigBets">Big bets:</label>
+    <input type="text" id="bigBets" value="4, 11, 25, 55, 120, 250">
 </div>
 <div class="button-container">
     <button id="startBot">Start Bot</button>
