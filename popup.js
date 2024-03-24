@@ -65,6 +65,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const inputElement = document.getElementById(inputId);
     inputElement.addEventListener("input", function (event) {
       const inputValue = event.target.value;
+      if (inputValue === "") {
+        return;
+      }
       const regex = /^[0-9.]*$/;
       if (!regex.test(inputValue)) {
         event.target.value = inputValue.slice(0, -1);
@@ -91,6 +94,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const inputElement = document.getElementById(inputId);
     inputElement.addEventListener("input", function (event) {
       const inputValue = event.target.value;
+      if (inputValue === "") {
+        return;
+      }
       const regex = /^[0-9., ]*$/;
       if (!regex.test(inputValue)) {
         event.target.value = inputValue.slice(0, -1);
@@ -160,6 +166,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Получаем значение DEFAULT_START из поля ввода
   const defaultValueInput = document.getElementById("defaultValue");
+  let canStart;
 
   if (startBotButton) {
     startBotButton.addEventListener("click", function () {
@@ -167,15 +174,66 @@ document.addEventListener("DOMContentLoaded", function () {
       let maxBetValue = document.getElementById("maxBetValue").value;
       let smallBetsValue = document.getElementById("smallBets").value;
       let bigBetsValue = document.getElementById("bigBets").value;
-      // Вставляем и выполняем код в консоли
-      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-        // Получаем активную вкладку
-        let activeTab = tabs[0];
-        let params;
-        // Формируем код для выполнения в консоли
-        if (!isInit) {
-          params = {
-            code: `
+
+      // Проверяем, содержат ли значения инпутов только цифры и разделители
+      const regex = /^[0-9.]+$/;
+      if (!regex.test(defaultValue) || !regex.test(maxBetValue)) {
+        canStart = false;
+        alert("Please enter valid numbers in all input fields.");
+        return;
+      } else {
+        canStart = true;
+      }
+
+      const regex1 = /^[0-9., ]+$/;
+      if (!regex1.test(smallBetsValue) || !regex1.test(bigBetsValue)) {
+        canStart = false;
+        alert("Please enter valid numbers in all input fields.");
+        return;
+      } else {
+        canStart = true;
+      }
+
+      // Проверяем, что значения инпутов заканчиваются цифрой
+      if (
+        !/^[0-9]$/.test(defaultValue.slice(-1)) ||
+        !/^[0-9]$/.test(maxBetValue.slice(-1)) ||
+        !/^[0-9]$/.test(smallBetsValue.slice(-1)) ||
+        !/^[0-9]$/.test(bigBetsValue.slice(-1))
+      ) {
+        canStart = false;
+        alert("Values in input fields must end with a number.");
+        return;
+      } else {
+        canStart = true;
+      }
+
+      // Проверяем, что значения инпутов начинаются цифрой
+      if (
+        !/^[0-9]$/.test(defaultValue.slice(0)) ||
+        !/^[0-9]$/.test(maxBetValue.slice(0)) ||
+        !/^[0-9]$/.test(smallBetsValue.slice(0)) ||
+        !/^[0-9]$/.test(bigBetsValue.slice(0))
+      ) {
+        canStart = false;
+        alert("Values in input fields must start with a number.");
+        return;
+      } else {
+        canStart = true;
+      }
+
+      if (canStart) {
+        // Вставляем и выполняем код в консоли
+        chrome.tabs.query(
+          { active: true, currentWindow: true },
+          function (tabs) {
+            // Получаем активную вкладку
+            let activeTab = tabs[0];
+            let params;
+            // Формируем код для выполнения в консоли
+            if (!isInit) {
+              params = {
+                code: `
                             let DEFAULT_START = ${JSON.stringify(defaultValue)};
                             let maxBet = ${JSON.stringify(maxBetValue)};
                            
@@ -211,10 +269,10 @@ document.addEventListener("DOMContentLoaded", function () {
                             
                             ${isInit ? botCode.restartBot : botCode.startBot}
                         `,
-          };
-        } else {
-          params = {
-            code: `
+              };
+            } else {
+              params = {
+                code: `
                             DEFAULT_START = ${JSON.stringify(defaultValue)};
                             maxBet = ${JSON.stringify(maxBetValue)};
                             
@@ -248,28 +306,30 @@ document.addEventListener("DOMContentLoaded", function () {
                             
                             ${isInit ? botCode.restartBot : botCode.startBot}
                         `,
-          };
-        }
+              };
+            }
 
-        // Вставляем и выполняем код из botCode.js в консоли
-        chrome.tabs.executeScript(activeTab.id, params, function (result) {
-          if (chrome.runtime.lastError) {
-            console.error(
-              "Ошибка в выполнении скрипта:",
-              chrome.runtime.lastError,
-            );
-          } else {
-            console.log("Код успешно выполнен:", result);
-            isInit = true;
-            saveBotState(true); // Сохраняем состояние бота как запущенный
-          }
-        });
-      });
-      startBotButton.style.display = "none";
-      stopBotButton.style.display = "block";
+            // Вставляем и выполняем код из botCode.js в консоли
+            chrome.tabs.executeScript(activeTab.id, params, function (result) {
+              if (chrome.runtime.lastError) {
+                console.error(
+                  "Ошибка в выполнении скрипта:",
+                  chrome.runtime.lastError,
+                );
+              } else {
+                console.log("Код успешно выполнен:", result);
+                isInit = true;
+                saveBotState(true); // Сохраняем состояние бота как запущенный
+              }
+            });
+          },
+        );
+        startBotButton.style.display = "none";
+        stopBotButton.style.display = "block";
 
-      saveBotState(true); // Сохраняем состояние бота как запущенный
-      saveValuesToLocalStorage();
+        saveBotState(true); // Сохраняем состояние бота как запущенный
+        saveValuesToLocalStorage();
+      }
     });
   } else {
     console.error('Элемент с id "startBot" не найден.');
