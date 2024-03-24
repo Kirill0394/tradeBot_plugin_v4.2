@@ -47,18 +47,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
   let bigBetsValue;
 
+  // Получаем значение DEFAULT_START из поля ввода
+  const defaultValueInput = document.getElementById("defaultValue");
+  defaultValue = defaultValueInput.value;
+  const maxBetValueInput = document.getElementById("maxBetValue");
+  maxBetValue = maxBetValueInput.value;
+  const smallBetsValueInput = document.getElementById("smallBets");
+  smallBetsValue = smallBetsValueInput.value;
+  const bigBetsValueInput = document.getElementById("bigBets");
+  bigBetsValue = bigBetsValueInput.value;
+
   if (startBotButton) {
     startBotButton.addEventListener("click", function () {
-      // Получаем значение DEFAULT_START из поля ввода
-      const defaultValueInput = document.getElementById("defaultValue");
-      defaultValue = defaultValueInput.value;
-      const maxBetValueInput = document.getElementById("maxBetValue");
-      maxBetValue = maxBetValueInput.value;
-      const smallBetsValueInput = document.getElementById("smallBets");
-      smallBetsValue = smallBetsValueInput.value;
-      const bigBetsValueInput = document.getElementById("bigBets");
-      bigBetsValue = bigBetsValueInput.value;
-
       // Вставляем и выполняем код в консоли
       chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         // Получаем активную вкладку
@@ -66,6 +66,12 @@ document.addEventListener("DOMContentLoaded", function () {
         let params;
         // Формируем код для выполнения в консоли
         if (!isInit) {
+          if (
+            parseFloat(maxBetValue) >
+            parseFloat(bigBetsValue[bigBetsValue.length - 1])
+          ) {
+            maxBetValue = bigBetsValue[bigBetsValue.length - 1];
+          }
           params = {
             code: `
                             let DEFAULT_START = ${JSON.stringify(defaultValue)};
@@ -197,7 +203,6 @@ document.addEventListener("DOMContentLoaded", function () {
   // Обработчик события для кнопки "Set Bet"
   const setBetButton = document.getElementById("setBetButton");
   const betInputContainer = document.getElementById("betInputContainer");
-  const defaultValueInput = document.getElementById("defaultValue");
 
   setBetButton.addEventListener("click", function () {
     if (betInputContainer.style.display === "none") {
