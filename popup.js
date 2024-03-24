@@ -210,10 +210,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Проверяем, что значения инпутов начинаются цифрой
       if (
-        !/^[0-9]$/.test(defaultValue.slice(0)) ||
-        !/^[0-9]$/.test(maxBetValue.slice(0)) ||
-        !/^[0-9]$/.test(smallBetsValue.slice(0)) ||
-        !/^[0-9]$/.test(bigBetsValue.slice(0))
+        !/^[0-9]$/.test(defaultValue[0]) ||
+        !/^[0-9]$/.test(maxBetValue[0]) ||
+        !/^[0-9]$/.test(smallBetsValue[0]) ||
+        !/^[0-9]$/.test(bigBetsValue[0])
       ) {
         canStart = false;
         alert("Values in input fields must start with a number.");
