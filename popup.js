@@ -72,15 +72,32 @@ document.addEventListener("DOMContentLoaded", function () {
                             let maxBet = ${JSON.stringify(maxBetValue)};
                             
                             let array = JSON.parse(\`${JSON.stringify(smallBetsValue)}\`);
-                            let array1 = floatArray = array.split(", ").map(function(item) {
-                                return parseFloat(item);
-                            });
+                            let array1;
+                            
+                            if (array.includes(",")) {
+                              array1 = floatArray = array.split(", ").map(function(item) {
+                                  return parseFloat(item);
+                              });
+                            } else {
+                              array1 = floatArray = array.split("").map(function(item) {
+                                  return parseFloat(item);
+                              });    
+                            }  
+                            
                             let smallBets = array1.map(x => x * DEFAULT_START);
                             
                             array = JSON.parse(\`${JSON.stringify(bigBetsValue)}\`);
-                            array1 = floatArray = array.split(", ").map(function(item) {
-                                return parseFloat(item);
-                            });
+                            
+                            if (array.includes(",")) {
+                              array1 = floatArray = array.split(", ").map(function(item) {
+                                  return parseFloat(item);
+                              });
+                            } else {
+                              array1 = floatArray = array.split("").map(function(item) {
+                                  return parseFloat(item);
+                              });    
+                            } 
+                            
                             let bigBets = array1.map(x => x * DEFAULT_START);
                             
                             ${isInit ? botCode.restartBot : botCode.startBot}
@@ -93,15 +110,31 @@ document.addEventListener("DOMContentLoaded", function () {
                             maxBet = ${JSON.stringify(maxBetValue)};
                             
                             array = JSON.parse(\`${JSON.stringify(smallBetsValue)}\`);
-                            array1 = floatArray = array.split(", ").map(function(item) {
-                                return parseFloat(item);
-                            });
+                            
+                            if (array.includes(",")) {
+                              array1 = floatArray = array.split(", ").map(function(item) {
+                                  return parseFloat(item);
+                              });
+                            } else {
+                              array1 = floatArray = array.split("").map(function(item) {
+                                  return parseFloat(item);
+                              });    
+                            } 
+                            
                             smallBets = array1.map(x => x * DEFAULT_START);
                             
                             array = JSON.parse(\`${JSON.stringify(bigBetsValue)}\`);
-                            array1 = floatArray = array.split(", ").map(function(item) {
-                                return parseFloat(item);
-                            });
+                            
+                            if (array.includes(",")) {
+                              array1 = floatArray = array.split(", ").map(function(item) {
+                                  return parseFloat(item);
+                              });
+                            } else {
+                              array1 = floatArray = array.split("").map(function(item) {
+                                  return parseFloat(item);
+                              });    
+                            } 
+                            
                             bigBets = array1.map(x => x * DEFAULT_START);
                             
                             ${isInit ? botCode.restartBot : botCode.startBot}
