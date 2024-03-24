@@ -10,15 +10,6 @@ function getAllEl(str) {
   return document.querySelectorAll(str);
 }
 
-function multiplyArray(arr) {
-  for (let i = 0; i < arr.length; i++) {
-    arr[i] *= DEFAULT_START;
-  }
-  return arr;
-}
-
-let smallBets = multiplyArray([1, 1]);
-
 let currentCount = smallBets[0];
 
 let smallBetLosses = 0;
@@ -206,7 +197,7 @@ const dealsListObserver = new MutationObserver((mutations) => {
               if (smallBets.includes(currentCount)) {
                 smallBetLosses += 1;
 
-                if (smallBetLosses < 2) {
+                if (smallBetLosses < smallBets.length) {
                   currentCount = smallBets[smallBetLosses];
                 } else {
                   smallBetLosses = 0;
@@ -312,7 +303,6 @@ function stopBot() {
   console.log("Bot stopped");
 }
 
-
 if (profitPercent >= 92) {
   if (!hotKeysOn) {
     openHotKeysWindow();
@@ -326,7 +316,6 @@ if (profitPercent >= 92) {
 } else {
   alert("The bot is not running. Profit below 92% (=" + profitPercent + "%)");
 }
-
 
 `,
   stopBot: "stopBot()",
