@@ -4,6 +4,24 @@ document.head.appendChild(script);
 
 let isInit = false;
 
+// Функция для сохранения значений инпутов и состояния кнопок в локальном хранилище
+function saveValuesToLocalStorage() {
+  const defaultValue = document.getElementById("defaultValue").value;
+  const maxBetValue = document.getElementById("maxBetValue").value;
+  const smallBetsValue = document.getElementById("smallBets").value;
+  const bigBetsValue = document.getElementById("bigBets").value;
+  const isBotRunning =
+    document.getElementById("stopBot").style.display === "block";
+
+  chrome.storage.local.set({
+    defaultValue,
+    maxBetValue,
+    smallBetsValue,
+    bigBetsValue,
+    isBotRunning,
+  });
+}
+
 // Функция для сохранения состояния бота в локальном хранилище
 function saveBotState(isBotRunning) {
   chrome.storage.local.set({ isBotRunning });
@@ -11,29 +29,36 @@ function saveBotState(isBotRunning) {
 
 document.addEventListener("DOMContentLoaded", function () {
   // Функция для загрузки состояния бота из локального хранилища
-  function loadBotState(callback) {
-    chrome.storage.local.get("isBotRunning", function (data) {
-      callback(data.isBotRunning);
-    });
+  function loadValuesFromLocalStorage(callback) {
+    chrome.storage.local.get(
+      [
+        "defaultValue",
+        "maxBetValue",
+        "smallBetsValue",
+        "bigBetsValue",
+        "isBotRunning",
+      ],
+      function (data) {
+        callback(data);
+      },
+    );
   }
 
-  // Обновляем кнопки в соответствии с состоянием бота
-  function updateButtons(isBotRunning) {
-    const startBotButton = document.getElementById("startBot");
-    const stopBotButton = document.getElementById("stopBot");
-
-    if (isBotRunning) {
-      startBotButton.style.display = "none";
-      stopBotButton.style.display = "block";
+  // Обновление значений инпутов и состояния кнопок из локального хранилища
+  loadValuesFromLocalStorage(function (data) {
+    if (Object.keys(data).length === 0 && data.constructor === Object) {
+      // Если данные отсутствуют, устанавливаем значения по умолчанию
+      document.getElementById("defaultValue").value = "1";
+      document.getElementById("maxBetValue").value = "250";
+      document.getElementById("smallBets").value = "1, 1";
+      document.getElementById("bigBets").value = "4, 11, 25, 55, 120, 250";
     } else {
-      startBotButton.style.display = "block";
-      stopBotButton.style.display = "none";
+      // Если данные загружены из хранилища, устанавливаем их в инпуты
+      document.getElementById("defaultValue").value = data.defaultValue || "";
+      document.getElementById("maxBetValue").value = data.maxBetValue || "";
+      document.getElementById("smallBets").value = data.smallBetsValue || "";
+      document.getElementById("bigBets").value = data.bigBetsValue || "";
     }
-  }
-
-  // Загружаем состояние бота и обновляем кнопки
-  loadBotState(function (isBotRunning) {
-    updateButtons(isBotRunning);
   });
 
   // Обработчик события для кнопки "Start Bot"
@@ -163,6 +188,11 @@ document.addEventListener("DOMContentLoaded", function () {
           }
         });
       });
+      startBotButton.style.display = "none";
+      stopBotButton.style.display = "block";
+
+      saveBotState(true); // Сохраняем состояние бота как запущенный
+      saveValuesToLocalStorage();
     });
   } else {
     console.error('Элемент с id "startBot" не найден.');
@@ -195,6 +225,11 @@ document.addEventListener("DOMContentLoaded", function () {
           },
         );
       });
+      stopBotButton.style.display = "none";
+      startBotButton.style.display = "block";
+
+      saveBotState(false); // Сохраняем состояние бота как остановленный
+      saveValuesToLocalStorage();
     });
   } else {
     console.error('Элемент с id "stopBot" не найден.');
