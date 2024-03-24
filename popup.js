@@ -4,6 +4,34 @@ document.head.appendChild(script);
 
 let isInit = false;
 
+// Функция для добавления слушателей событий к инпутам
+function addInputListeners() {
+  // Получаем ссылки на все инпуты
+  const defaultValueInput = document.getElementById("defaultValue");
+  const maxBetValueInput = document.getElementById("maxBetValue");
+  const smallBetsInput = document.getElementById("smallBets");
+  const bigBetsInput = document.getElementById("bigBets");
+
+  // Добавляем слушатели событий для каждого инпута
+  defaultValueInput.addEventListener("input", handleInputChange);
+  maxBetValueInput.addEventListener("input", handleInputChange);
+  smallBetsInput.addEventListener("input", handleInputChange);
+  bigBetsInput.addEventListener("input", handleInputChange);
+}
+
+// Функция обработчика события изменения значения в инпуте
+function handleInputChange(event) {
+  const inputId = event.target.id;
+  const inputValue = event.target.value;
+
+  // Обрабатываем изменения в зависимости от id инпута
+  switch (inputId) {
+    default:
+      saveValuesToLocalStorage();
+      break;
+  }
+}
+
 // Функция для сохранения значений инпутов и состояния кнопок в локальном хранилище
 function saveValuesToLocalStorage() {
   const defaultValue = document.getElementById("defaultValue").value;
@@ -28,6 +56,61 @@ function saveBotState(isBotRunning) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
+  // Вызываем функцию добавления слушателей к инпутам при загрузке документа
+  addInputListeners();
+
+  let inputIds = ["defaultValue", "maxBetValue"];
+
+  inputIds.forEach(function (inputId) {
+    const inputElement = document.getElementById(inputId);
+    inputElement.addEventListener("input", function (event) {
+      const inputValue = event.target.value;
+      const regex = /^[0-9.]*$/;
+      if (!regex.test(inputValue)) {
+        event.target.value = inputValue.slice(0, -1);
+      }
+    });
+    inputElement.addEventListener("paste", function (event) {
+      // Получаем вставляемый текст из буфера обмена
+      const pastedText = (event.clipboardData || window.clipboardData).getData(
+        "text",
+      );
+
+      // Проверяем, содержит ли вставленный текст запрещенные символы
+      const regex = /^[0-9.]*$/;
+      if (!regex.test(pastedText)) {
+        // Отменяем операцию вставки
+        event.preventDefault();
+      }
+    });
+  });
+
+  inputIds = ["smallBets", "bigBets"];
+
+  inputIds.forEach(function (inputId) {
+    const inputElement = document.getElementById(inputId);
+    inputElement.addEventListener("input", function (event) {
+      const inputValue = event.target.value;
+      const regex = /^[0-9., ]*$/;
+      if (!regex.test(inputValue)) {
+        event.target.value = inputValue.slice(0, -1);
+      }
+    });
+    inputElement.addEventListener("paste", function (event) {
+      // Получаем вставляемый текст из буфера обмена
+      const pastedText = (event.clipboardData || window.clipboardData).getData(
+        "text",
+      );
+
+      // Проверяем, содержит ли вставленный текст запрещенные символы
+      const regex = /^[0-9., ]*$/;
+      if (!regex.test(pastedText)) {
+        // Отменяем операцию вставки
+        event.preventDefault();
+      }
+    });
+  });
+
   // Функция для загрузки состояния бота из локального хранилища
   function loadValuesFromLocalStorage(callback) {
     chrome.storage.local.get(
@@ -59,31 +142,31 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("smallBets").value = data.smallBetsValue || "";
       document.getElementById("bigBets").value = data.bigBetsValue || "";
     }
+
+    const startBotButton = document.getElementById("startBot");
+    const stopBotButton = document.getElementById("stopBot");
+    if (data.isBotRunning) {
+      startBotButton.style.display = "none";
+      stopBotButton.style.display = "block";
+    } else {
+      startBotButton.style.display = "block";
+      stopBotButton.style.display = "none";
+    }
   });
 
   // Обработчик события для кнопки "Start Bot"
   const startBotButton = document.getElementById("startBot");
   const stopBotButton = document.getElementById("stopBot");
-  let defaultValue;
-
-  let maxBetValue;
-
-  let smallBetsValue;
-
-  let bigBetsValue;
 
   // Получаем значение DEFAULT_START из поля ввода
   const defaultValueInput = document.getElementById("defaultValue");
-  defaultValue = defaultValueInput.value;
-  const maxBetValueInput = document.getElementById("maxBetValue");
-  maxBetValue = maxBetValueInput.value;
-  const smallBetsValueInput = document.getElementById("smallBets");
-  smallBetsValue = smallBetsValueInput.value;
-  const bigBetsValueInput = document.getElementById("bigBets");
-  bigBetsValue = bigBetsValueInput.value;
 
   if (startBotButton) {
     startBotButton.addEventListener("click", function () {
+      let defaultValue = document.getElementById("defaultValue").value;
+      let maxBetValue = document.getElementById("maxBetValue").value;
+      let smallBetsValue = document.getElementById("smallBets").value;
+      let bigBetsValue = document.getElementById("bigBets").value;
       // Вставляем и выполняем код в консоли
       chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         // Получаем активную вкладку
@@ -91,16 +174,11 @@ document.addEventListener("DOMContentLoaded", function () {
         let params;
         // Формируем код для выполнения в консоли
         if (!isInit) {
-          if (
-            parseFloat(maxBetValue) >
-            parseFloat(bigBetsValue[bigBetsValue.length - 1])
-          ) {
-            maxBetValue = bigBetsValue[bigBetsValue.length - 1];
-          }
           params = {
             code: `
                             let DEFAULT_START = ${JSON.stringify(defaultValue)};
                             let maxBet = ${JSON.stringify(maxBetValue)};
+                           
                             
                             let array = JSON.parse(\`${JSON.stringify(smallBetsValue)}\`);
                             let array1;
@@ -184,7 +262,6 @@ document.addEventListener("DOMContentLoaded", function () {
             console.log("Код успешно выполнен:", result);
             isInit = true;
             saveBotState(true); // Сохраняем состояние бота как запущенный
-            updateButtons(true); // Обновляем кнопки
           }
         });
       });
@@ -220,7 +297,6 @@ document.addEventListener("DOMContentLoaded", function () {
               console.log("Код успешно выполнен:", result);
               alert("The bot is stopped");
               saveBotState(false); // Сохраняем состояние бота как остановленный
-              updateButtons(false); // Обновляем кнопки
             }
           },
         );

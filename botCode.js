@@ -196,6 +196,7 @@ const dealsListObserver = new MutationObserver((mutations) => {
             if (textArray[0] > textArray[1]) {
               if (smallBets.includes(currentCount)) {
                 smallBetLosses += 1;
+               
 
                 if (smallBetLosses < smallBets.length) {
                   currentCount = smallBets[smallBetLosses];
@@ -213,6 +214,7 @@ const dealsListObserver = new MutationObserver((mutations) => {
 
               setValueInput(valueInput, "$" + currentCount);
             }
+           
 
             if (textArray[0] < textArray[1]) {
               if (smallBets.includes(currentCount)) {
@@ -240,7 +242,7 @@ const dealsListObserver = new MutationObserver((mutations) => {
           if (currentCount >= maxBet) {
             block = true;
           }
-
+     
           makeDecision();
         }
       }
