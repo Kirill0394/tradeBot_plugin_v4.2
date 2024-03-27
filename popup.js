@@ -385,12 +385,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-function trackBrowserPageUpdate() {
-  chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-    // Проверяем, является ли обновление для всех вкладок в браузере и статус обновления "complete"
-    saveBotState(false);
-  });
-}
-
-// Вызов функции для отслеживания обновления страницы браузера
-trackBrowserPageUpdate();
+chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
+  // Проверяем, является ли обновление для всех вкладок в браузере и статус обновления "complete"
+  saveBotState(false);
+});
