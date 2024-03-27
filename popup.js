@@ -388,12 +388,7 @@ document.addEventListener("DOMContentLoaded", function () {
 function trackBrowserPageUpdate() {
   chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
     // Проверяем, является ли обновление для всех вкладок в браузере и статус обновления "complete"
-    if (tabId === null && changeInfo.status === "complete") {
-      // Здесь можно выполнить необходимые действия при обновлении страницы браузера
-      saveBotState(false);
-    } else {
-      saveBotState(false);
-    }
+    saveBotState(false);
   });
 }
 
