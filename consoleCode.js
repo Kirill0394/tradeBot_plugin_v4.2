@@ -307,8 +307,14 @@ if (profitPercent >= 92) {
   if (currentSymbol.includes("OTC")) {
     setTimeout(startBot, 2000);
   } else {
-    alert("The bot is not running. Current symbol is not OTC");
+    alert(
+      "The bot is not running. Current symbol is not OTC, please refresh the page",
+    );
   }
 } else {
-  alert("The bot is not running. Profit below 92% (=" + profitPercent + "%)");
+  alert(
+    "The bot is not running. Profit below 92% (=" +
+      profitPercent +
+      "%), please refresh the page",
+  );
 }

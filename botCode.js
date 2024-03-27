@@ -196,7 +196,6 @@ const dealsListObserver = new MutationObserver((mutations) => {
             if (textArray[0] > textArray[1]) {
               if (smallBets.includes(currentCount)) {
                 smallBetLosses += 1;
-               
 
                 if (smallBetLosses < smallBets.length) {
                   currentCount = smallBets[smallBetLosses];
@@ -214,7 +213,6 @@ const dealsListObserver = new MutationObserver((mutations) => {
 
               setValueInput(valueInput, "$" + currentCount);
             }
-           
 
             if (textArray[0] < textArray[1]) {
               if (smallBets.includes(currentCount)) {
@@ -242,7 +240,7 @@ const dealsListObserver = new MutationObserver((mutations) => {
           if (currentCount >= maxBet) {
             block = true;
           }
-     
+
           makeDecision();
         }
       }
@@ -313,11 +311,18 @@ if (profitPercent >= 92) {
   if (currentSymbol.includes("OTC")) {
     setTimeout(startBot, 2000);
   } else {
-    alert("The bot is not running. Current symbol is not OTC");
+    alert(
+      "The bot is not running. Current symbol is not OTC, please refresh the page",
+    );
   }
 } else {
-  alert("The bot is not running. Profit below 92% (=" + profitPercent + "%)");
+  alert(
+    "The bot is not running. Profit below 92% (=" +
+      profitPercent +
+      "%), please refresh the page",
+  );
 }
+
 
 `,
   stopBot: "stopBot()",
